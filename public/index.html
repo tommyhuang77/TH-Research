@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TH-Research - AI 报告存放平台</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 600px;
+            text-align: center;
+            color: white;
+        }
+
+        h1 {
+            font-size: 3em;
+            margin-bottom: 20px;
+            animation: fadeInDown 0.6s ease-out;
+        }
+
+        p {
+            font-size: 1.2em;
+            margin-bottom: 40px;
+            opacity: 0.95;
+            animation: fadeInUp 0.6s ease-out 0.2s both;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: fadeInUp 0.6s ease-out 0.4s both;
+            color: #333;
+        }
+
+        .card h2 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #667eea;
+        }
+
+        .features {
+            text-align: left;
+            margin: 30px 0;
+        }
+
+        .feature {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .feature-icon {
+            font-size: 1.5em;
+            margin-right: 15px;
+        }
+
+        .feature-text {
+            text-align: left;
+        }
+
+        .feature-text strong {
+            color: #667eea;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+        }
+
+        button {
+            flex: 1;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-manage {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-manage:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-info {
+            background: #f0f0f0;
+            color: #333;
+            border: 2px solid #667eea;
+        }
+
+        .btn-info:hover {
+            background: #f9f9f9;
+            border-color: #764ba2;
+        }
+
+        .info-text {
+            font-size: 0.9em;
+            color: #666;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 2em;
+            }
+
+            p {
+                font-size: 1em;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔬 TH-Research</h1>
+        <p>AI 生成的 HTML 报告存放与分享平台</p>
+
+        <div class="card">
+            <h2>欢迎来到报告平台</h2>
+
+            <div class="features">
+                <div class="feature">
+                    <div class="feature-icon">📤</div>
+                    <div class="feature-text">
+                        <strong>轻松上传</strong><br>
+                        上传 AI 生成的 HTML 报告文件
+                    </div>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">🔗</div>
+                    <div class="feature-text">
+                        <strong>即时分享</strong><br>
+                        自动生成公开网址，分享给他人
+                    </div>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">🛡️</div>
+                    <div class="feature-text">
+                        <strong>安全管理</strong><br>
+                        仅您可以管理上传的报告
+                    </div>
+                </div>
+
+                <div class="feature">
+                    <div class="feature-icon">🔄</div>
+                    <div class="feature-text">
+                        <strong>灵活控制</strong><br>
+                        停用、置换或删除已上传的报告
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button class="btn-manage" onclick="window.location.href='/manage'">📋 进入管理面板</button>
+            </div>
+
+            <div class="info-text">
+                💡 提示：进入管理面板需要输入密码
+            </div>
+        </div>
+    </div>
+</body>
+</html>

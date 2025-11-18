@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TH-Research 报告管理</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            color: white;
+            margin-bottom: 40px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            margin-bottom: 30px;
+        }
+
+        .auth-section {
+            margin-bottom: 30px;
+        }
+
+        .auth-section h2 {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        input[type="password"],
+        input[type="file"] {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input[type="password"]:focus,
+        input[type="file"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+        }
+
+        .button-group button {
+            flex: 1;
+        }
+
+        .upload-section {
+            display: none;
+        }
+
+        .upload-section.active {
+            display: block;
+        }
+
+        .upload-section h2 {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .reports-section {
+            display: none;
+        }
+
+        .reports-section.active {
+            display: block;
+        }
+
+        .reports-section h2 {
+            font-size: 1.3em;
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .report-item {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .report-info {
+            flex: 1;
+        }
+
+        .report-name {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 5px;
+            word-break: break-all;
+        }
+
+        .report-meta {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .report-url {
+            font-family: 'Courier New', monospace;
+            font-size: 0.85em;
+            color: #667eea;
+            margin-top: 5px;
+            word-break: break-all;
+            padding: 8px;
+            background: white;
+            border-radius: 4px;
+        }
+
+        .report-status {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            margin-left: 10px;
+        }
+
+        .report-status.active {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .report-status.disabled {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .report-actions {
+            display: flex;
+            gap: 10px;
+            margin-left: 20px;
+        }
+
+        .report-actions button {
+            padding: 8px 16px;
+            font-size: 0.9em;
+        }
+
+        .btn-copy {
+            background: #28a745;
+        }
+
+        .btn-copy:hover {
+            box-shadow: 0 5px 20px rgba(40, 167, 69, 0.4);
+        }
+
+        .btn-disable {
+            background: #ffc107;
+        }
+
+        .btn-disable:hover {
+            box-shadow: 0 5px 20px rgba(255, 193, 7, 0.4);
+        }
+
+        .btn-replace {
+            background: #17a2b8;
+        }
+
+        .btn-replace:hover {
+            box-shadow: 0 5px 20px rgba(23, 162, 184, 0.4);
+        }
+
+        .btn-delete {
+            background: #dc3545;
+        }
+
+        .btn-delete:hover {
+            box-shadow: 0 5px 20px rgba(220, 53, 69, 0.4);
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .alert.show {
+            display: block;
+        }
+
+        .alert.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert.info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #667eea;
+            font-weight: 600;
+        }
+
+        .loading.show {
+            display: block;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .logout-btn {
+            background: #6c757d;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .logout-btn:hover {
+            box-shadow: 0 5px 20px rgba(108, 117, 125, 0.4);
+        }
+
+        /* 搜索和过滤栏样式 */
+        .filter-bar {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .filter-bar.active {
+            display: block;
+        }
+
+        .filter-controls {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr auto;
+            gap: 12px;
+            align-items: end;
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .filter-group label {
+            font-size: 0.9em;
+            color: #666;
+            margin-bottom: 6px;
+            font-weight: 500;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 0.95em;
+            background: white;
+            color: #333;
+            transition: border-color 0.3s;
+        }
+
+        .filter-group input:focus,
+        .filter-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .filter-button-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .filter-button-group button {
+            padding: 10px 16px;
+            font-size: 0.9em;
+            flex: 1;
+        }
+
+        .btn-reset {
+            background: #6c757d;
+        }
+
+        .btn-reset:hover {
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.3);
+        }
+
+        .filter-info {
+            font-size: 0.85em;
+            color: #999;
+            margin-top: 12px;
+        }
+
+        .no-results {
+            text-align: center;
+            color: #999;
+            padding: 40px 20px;
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+        }
+
+        @media (max-width: 1024px) {
+            .filter-controls {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .filter-button-group {
+                grid-column: 1 / -1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .filter-controls {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-button-group {
+                grid-column: 1;
+            }
+
+            .report-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .report-actions {
+                margin-left: 0;
+                margin-top: 15px;
+                width: 100%;
+            }
+
+            .report-actions button {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔬 TH-Research</h1>
+            <p>AI 生成的 HTML 报告存放与分享平台</p>
+        </div>
+
+        <div class="card">
+            <div class="auth-section">
+                <h2>📝 认证</h2>
+                <div class="input-group">
+                    <input type="password" id="password" placeholder="输入管理密码">
+                    <button onclick="authenticate()">登入</button>
+                </div>
+                <div id="authAlert" class="alert"></div>
+            </div>
+
+            <div id="uploadSection" class="upload-section">
+                <h2>📤 上传报告</h2>
+                <div class="input-group">
+                    <input type="file" id="fileInput" accept=".html" placeholder="选择 HTML 文件">
+                    <button onclick="uploadFile()">上传</button>
+                </div>
+                <div id="uploadAlert" class="alert"></div>
+                <div id="uploadLoading" class="loading">
+                    <span class="spinner"></span>正在上传...
+                </div>
+            </div>
+
+            <div id="reportsSection" class="reports-section">
+                <h2>📋 我的报告</h2>
+                <div id="reportsLoading" class="loading">
+                    <span class="spinner"></span>加载中...
+                </div>
+
+                <!-- 搜索和过滤栏 -->
+                <div id="filterBar" class="filter-bar">
+                    <div class="filter-controls">
+                        <!-- 搜索框 -->
+                        <div class="filter-group">
+                            <label for="searchInput">🔍 搜索文件名</label>
+                            <input
+                                type="text"
+                                id="searchInput"
+                                placeholder="输入要搜索的文件名..."
+                                onkeyup="applyFiltersAndSort()"
+                            >
+                        </div>
+
+                        <!-- 状态过滤 -->
+                        <div class="filter-group">
+                            <label for="statusFilter">状态过滤</label>
+                            <select
+                                id="statusFilter"
+                                onchange="applyFiltersAndSort()"
+                            >
+                                <option value="">全部</option>
+                                <option value="active">✓ 活跃</option>
+                                <option value="disabled">✗ 已停用</option>
+                            </select>
+                        </div>
+
+                        <!-- 排序方式 -->
+                        <div class="filter-group">
+                            <label for="sortBy">排序方式</label>
+                            <select
+                                id="sortBy"
+                                onchange="applyFiltersAndSort()"
+                            >
+                                <option value="desc">最新优先</option>
+                                <option value="asc">最早优先</option>
+                            </select>
+                        </div>
+
+                        <!-- 操作按钮 -->
+                        <div class="filter-button-group">
+                            <button class="btn-reset" onclick="resetFilters()">重置</button>
+                        </div>
+                    </div>
+
+                    <!-- 过滤信息 -->
+                    <div id="filterInfo" class="filter-info"></div>
+                </div>
+
+                <div id="reportsList"></div>
+            </div>
+
+            <button class="logout-btn" id="logoutBtn" style="display: none;" onclick="logout()">退出登入</button>
+        </div>
+    </div>
+
+    <!-- Hidden file input for replace -->
+    <input type="file" id="replaceFileInput" accept=".html" style="display: none;">
+
+    <script>
+        let authToken = null;
+        let currentPassword = null;
+        // 存储原始报告列表，用于过滤和排序
+        let allReports = [];
+
+        function showAlert(elementId, message, type) {
+            const alertEl = document.getElementById(elementId);
+            alertEl.textContent = message;
+            alertEl.className = `alert show ${type}`;
+        }
+
+        function clearAlert(elementId) {
+            const alertEl = document.getElementById(elementId);
+            alertEl.className = 'alert';
+            alertEl.textContent = '';
+        }
+
+        async function authenticate() {
+            const password = document.getElementById('password').value;
+
+            if (!password) {
+                showAlert('authAlert', '❌ 请输入密码', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/health', {
+                    headers: {
+                        'x-upload-password': password
+                    }
+                });
+
+                if (response.ok) {
+                    authToken = password;
+                    currentPassword = password;
+                    document.getElementById('password').value = '';
+                    showAlert('authAlert', '✅ 认证成功！', 'success');
+                    
+                    // Show authenticated sections
+                    document.getElementById('uploadSection').classList.add('active');
+                    document.getElementById('reportsSection').classList.add('active');
+                    document.getElementById('logoutBtn').style.display = 'block';
+                    document.querySelector('.auth-section').style.display = 'none';
+
+                    // Load reports
+                    loadReports();
+                } else {
+                    showAlert('authAlert', '❌ 密码错误，请重试', 'error');
+                }
+            } catch (error) {
+                showAlert('authAlert', `❌ 错误: ${error.message}`, 'error');
+            }
+        }
+
+        async function uploadFile() {
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                showAlert('uploadAlert', '❌ 请选择一个 HTML 文件', 'error');
+                return;
+            }
+
+            if (!file.name.endsWith('.html')) {
+                showAlert('uploadAlert', '❌ 只支持 HTML 文件', 'error');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            document.getElementById('uploadLoading').classList.add('show');
+            clearAlert('uploadAlert');
+
+            try {
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    headers: {
+                        'x-upload-password': authToken
+                    },
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    showAlert('uploadAlert', `✅ 上传成功！`, 'success');
+                    fileInput.value = '';
+                    loadReports();
+                } else {
+                    showAlert('uploadAlert', `❌ 上传失败: ${data.error}`, 'error');
+                }
+            } catch (error) {
+                showAlert('uploadAlert', `❌ 错误: ${error.message}`, 'error');
+            } finally {
+                document.getElementById('uploadLoading').classList.remove('show');
+            }
+        }
+
+        async function loadReports() {
+            document.getElementById('reportsLoading').classList.add('show');
+
+            try {
+                const response = await fetch('/api/reports', {
+                    headers: {
+                        'x-upload-password': authToken
+                    }
+                });
+
+                if (response.ok) {
+                    const reports = await response.json();
+                    // 保存原始报告列表，用于过滤和排序
+                    allReports = reports;
+                    // 显示过滤栏
+                    document.getElementById('filterBar').classList.add('active');
+                    // 应用当前的搜索和过滤
+                    applyFiltersAndSort();
+                } else {
+                    showAlert('reportsSection', '❌ 无法加载报告列表', 'error');
+                }
+            } catch (error) {
+                showAlert('reportsSection', `❌ 错误: ${error.message}`, 'error');
+            } finally {
+                document.getElementById('reportsLoading').classList.remove('show');
+            }
+        }
+
+        /**
+         * 应用搜索、过滤和排序
+         * - 搜索：按文件名模糊匹配
+         * - 过滤：按状态过滤
+         * - 排序：按创建日期升序或降序排列
+         */
+        function applyFiltersAndSort() {
+            // 获取过滤条件
+            const searchText = document.getElementById('searchInput').value.toLowerCase().trim();
+            const statusFilter = document.getElementById('statusFilter').value;
+            const sortBy = document.getElementById('sortBy').value;
+
+            // 第一步：搜索过滤 - 按文件名搜索
+            let filtered = allReports.filter(report => {
+                const filename = report.original_filename.toLowerCase();
+                return filename.includes(searchText);
+            });
+
+            // 第二步：状态过滤
+            if (statusFilter) {
+                filtered = filtered.filter(report => report.status === statusFilter);
+            }
+
+            // 第三步：排序 - 按创建日期排序
+            filtered.sort((a, b) => {
+                const dateA = new Date(a.created_at);
+                const dateB = new Date(b.created_at);
+                return sortBy === 'desc' ? dateB - dateA : dateA - dateB;
+            });
+
+            // 渲染过滤后的报告
+            renderFilteredReports(filtered);
+
+            // 更新过滤信息
+            updateFilterInfo(filtered.length, searchText, statusFilter, sortBy);
+        }
+
+        /**
+         * 渲染过滤后的报告列表
+         */
+        function renderFilteredReports(reports) {
+            const reportsList = document.getElementById('reportsList');
+
+            if (reports.length === 0) {
+                if (allReports.length === 0) {
+                    // 没有任何报告
+                    reportsList.innerHTML = '<div class="no-results">📭 还没有上传任何报告</div>';
+                } else {
+                    // 有报告但过滤后没有结果
+                    reportsList.innerHTML = '<div class="no-results">🔍 没有找到匹配的报告，请尝试调整搜索条件</div>';
+                }
+                return;
+            }
+
+            reportsList.innerHTML = reports.map(report => `
+                <div class="report-item">
+                    <div class="report-info">
+                        <div class="report-name">
+                            ${report.original_filename}
+                            <span class="report-status ${report.status}">${report.status === 'active' ? '✓ 活跃' : '✗ 已停用'}</span>
+                        </div>
+                        <div class="report-meta">
+                            ID: ${report.id}
+                            <br>创建时间: ${new Date(report.created_at).toLocaleString('zh-CN')}
+                        </div>
+                        <div class="report-url" onclick="copyToClipboard('${report.public_url}')">
+                            公开网址: ${report.public_url}
+                        </div>
+                    </div>
+                    <div class="report-actions">
+                        <button class="btn-copy" onclick="copyToClipboard('${report.public_url}')">📋 复制链接</button>
+                        ${report.status === 'active' ? `<button class="btn-disable" onclick="disableReport('${report.id}')">🚫 停用</button>` : ''}
+                        <button class="btn-replace" onclick="replaceReport('${report.id}')">🔄 置换</button>
+                        <button class="btn-delete" onclick="deleteReport('${report.id}')">🗑️ 删除</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        /**
+         * 更新过滤信息显示
+         */
+        function updateFilterInfo(resultCount, searchText, statusFilter, sortBy) {
+            const filterInfo = document.getElementById('filterInfo');
+            let info = `显示 ${resultCount} / ${allReports.length} 个报告`;
+
+            const filters = [];
+            if (searchText) filters.push(`搜索: "${searchText}"`);
+            if (statusFilter) filters.push(`状态: ${statusFilter === 'active' ? '✓ 活跃' : '✗ 已停用'}`);
+            if (sortBy === 'asc') filters.push(`排序: 最早优先`);
+
+            if (filters.length > 0) {
+                info += ` | ${filters.join(' | ')}`;
+            }
+
+            filterInfo.textContent = info;
+        }
+
+        /**
+         * 重置所有过滤条件和搜索
+         */
+        function resetFilters() {
+            // 清除所有输入
+            document.getElementById('searchInput').value = '';
+            document.getElementById('statusFilter').value = '';
+            document.getElementById('sortBy').value = 'desc';
+
+            // 重新应用过滤（实际上就是显示所有报告）
+            applyFiltersAndSort();
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert('✅ 链接已复制到剪贴板！');
+            });
+        }
+
+        async function disableReport(reportId) {
+            if (!confirm('确定要停用此报告吗？其他人将无法访问。')) return;
+
+            try {
+                const response = await fetch(`/api/reports/${reportId}/disable`, {
+                    method: 'PATCH',
+                    headers: {
+                        'x-upload-password': authToken
+                    }
+                });
+
+                if (response.ok) {
+                    loadReports();
+                } else {
+                    alert('❌ 停用失败');
+                }
+            } catch (error) {
+                alert(`❌ 错误: ${error.message}`);
+            }
+        }
+
+        async function deleteReport(reportId) {
+            if (!confirm('确定要删除此报告吗？此操作无法撤销。')) return;
+
+            try {
+                const response = await fetch(`/api/reports/${reportId}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'x-upload-password': authToken
+                    }
+                });
+
+                if (response.ok) {
+                    loadReports();
+                } else {
+                    alert('❌ 删除失败');
+                }
+            } catch (error) {
+                alert(`❌ 错误: ${error.message}`);
+            }
+        }
+
+        function replaceReport(reportId) {
+            const fileInput = document.getElementById('replaceFileInput');
+            fileInput.reportId = reportId;
+            fileInput.click();
+        }
+
+        document.getElementById('replaceFileInput').addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            const reportId = e.target.reportId;
+
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            document.getElementById('uploadLoading').classList.add('show');
+
+            try {
+                const response = await fetch(`/api/reports/${reportId}/replace`, {
+                    method: 'POST',
+                    headers: {
+                        'x-upload-password': authToken
+                    },
+                    body: formData
+                });
+
+                if (response.ok) {
+                    showAlert('uploadAlert', '✅ 置换成功！', 'success');
+                    loadReports();
+                } else {
+                    showAlert('uploadAlert', '❌ 置换失败', 'error');
+                }
+            } catch (error) {
+                showAlert('uploadAlert', `❌ 错误: ${error.message}`, 'error');
+            } finally {
+                document.getElementById('uploadLoading').classList.remove('show');
+                e.target.value = '';
+            }
+        });
+
+        function logout() {
+            authToken = null;
+            currentPassword = null;
+            // 隐藏各个区域
+            document.getElementById('uploadSection').classList.remove('active');
+            document.getElementById('reportsSection').classList.remove('active');
+            document.getElementById('filterBar').classList.remove('active');
+            document.getElementById('logoutBtn').style.display = 'none';
+            document.querySelector('.auth-section').style.display = 'block';
+            // 清空报告列表和过滤条件
+            document.getElementById('reportsList').innerHTML = '';
+            allReports = [];
+            resetFilters();
+            showAlert('authAlert', '✅ 已退出登入', 'info');
+        }
+    </script>
+</body>
+</html>
