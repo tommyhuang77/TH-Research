@@ -453,6 +453,7 @@
 
             <div id="reportsSection" class="reports-section">
                 <h2>📋 我的报告</h2>
+                <div id="reportsAlert" class="alert"></div>
                 <div id="reportsLoading" class="loading">
                     <span class="spinner"></span>加载中...
                 </div>
@@ -618,6 +619,7 @@
 
         async function loadReports() {
             document.getElementById('reportsLoading').classList.add('show');
+            clearAlert('reportsAlert');
 
             try {
                 const response = await fetch('/api/reports', {
@@ -635,10 +637,10 @@
                     // 应用当前的搜索和过滤
                     applyFiltersAndSort();
                 } else {
-                    showAlert('reportsSection', '❌ 无法加载报告列表', 'error');
+                    showAlert('reportsAlert', '❌ 无法加载报告列表', 'error');
                 }
             } catch (error) {
-                showAlert('reportsSection', `❌ 错误: ${error.message}`, 'error');
+                showAlert('reportsAlert', `❌ 错误: ${error.message}`, 'error');
             } finally {
                 document.getElementById('reportsLoading').classList.remove('show');
             }
