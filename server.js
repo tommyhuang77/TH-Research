@@ -19,10 +19,10 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Supabase Client
-// 尝试使用 SERVICE_KEY，如果失败则使用 ANON_KEY
+// 使用 ANON_KEY（带正确的认证头权限）
 const supabase = createClient(
   process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY
+  process.env.SUPABASE_ANON_KEY
 );
 
 // Multer Configuration
