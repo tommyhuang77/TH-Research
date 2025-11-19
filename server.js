@@ -290,6 +290,33 @@ app.get('/api/health', (req, res) => {
   res.json({ status: 'ok' });
 });
 
+// 9. Network Diagnostics
+app.get('/api/diagnostics', async (req, res) => {
+  try {
+    const supabaseUrl = process.env.SUPABASE_URL;
+    console.log('Testing connection to:', supabaseUrl);
+    
+    const response = await fetch(`${supabaseUrl}/rest/v1/`, {
+      headers: {
+        'apikey': process.env.SUPABASE_ANON_KEY
+      }
+    });
+    
+    res.json({
+      status: 'ok',
+      supabaseUrl: supabaseUrl,
+      responseStatus: response.status,
+      message: 'Successfully connected to Supabase'
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      error: error.message,
+      supabaseUrl: process.env.SUPABASE_URL
+    });
+  }
+});
+
 // Start Server
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
