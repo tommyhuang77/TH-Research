@@ -18,20 +18,12 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Supabase Client - 使用 SERVICE_KEY 获得管理员权限
-const supabaseAdmin = createClient(
+// Supabase Client
+// 尝试使用 SERVICE_KEY，如果失败则使用 ANON_KEY
+const supabase = createClient(
   process.env.SUPABASE_URL,
-  process.env.SUPABASE_SERVICE_KEY,
-  {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false,
-    },
-  }
+  process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_ANON_KEY
 );
-
-// 备用：如果 SERVICE_KEY 失败，使用 ANON_KEY
-const supabase = supabaseAdmin;
 
 // Multer Configuration
 const storage = multer.memoryStorage();
