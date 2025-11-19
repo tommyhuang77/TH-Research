@@ -64,6 +64,12 @@ app.post('/api/upload', authenticate, upload.single('file'), async (req, res) =>
       return res.status(400).json({ error: 'No file provided' });
     }
 
+    console.log('Upload request:', {
+      filename: req.file.originalname,
+      mimetype: req.file.mimetype,
+      size: req.file.size
+    });
+
     const reportId = uuidv4();
     const fileName = `${reportId}.html`;
 
@@ -76,6 +82,7 @@ app.post('/api/upload', authenticate, upload.single('file'), async (req, res) =>
       });
 
     if (error) {
+      console.error('Supabase Storage error:', error);
       return res.status(500).json({ error: error.message });
     }
 
