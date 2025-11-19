@@ -71,7 +71,7 @@ app.post('/api/upload', authenticate, upload.single('file'), async (req, res) =>
     const { data, error } = await supabase.storage
       .from(process.env.STORAGE_BUCKET)
       .upload(fileName, req.file.buffer, {
-        contentType: 'text/html',
+        contentType: 'application/octet-stream',
         upsert: false
       });
 
