@@ -31,7 +31,9 @@ const upload = multer({
   storage,
   limits: { fileSize: parseInt(process.env.MAX_FILE_SIZE || '52428800') },
   fileFilter: (req, file, cb) => {
-    if (file.mimetype === 'text/html') {
+    // Check file extension instead of MIME type for better compatibility
+    const filename = file.originalname.toLowerCase();
+    if (filename.endsWith('.html')) {
       cb(null, true);
     } else {
       cb(new Error('Only HTML files are allowed'));
