@@ -29,17 +29,18 @@ const supabase = createClient(
 const storage = multer.memoryStorage();
 const upload = multer({
   storage,
-  limits: { fileSize: parseInt(process.env.MAX_FILE_SIZE || '52428800') },
-  fileFilter: (req, file, cb) => {
-    // Check file extension instead of MIME type for better compatibility
-    const filename = file.originalname.toLowerCase();
-    if (filename.endsWith('.html')) {
-      cb(null, true);
-    } else {
-      cb(new Error('Only HTML files are allowed'));
-    }
-  }
+  limits: { fileSize: parseInt(process.env.MAX_FILE_SIZE || '52428800') }
 });
+
+// Error handling middleware for multer
+const handleMulterErrors = (err, req, res, next) => {
+  if (err instanceof multer.MulterError) {
+    return res.status(400).json({ error: err.message });
+  } else if (err) {
+    return res.status(400).json({ error: err.message });
+  }
+  next();
+};
 
 // Middleware: Password Authentication
 const authenticate = (req, res, next) => {
@@ -77,7 +78,6 @@ app.post('/api/upload', authenticate, upload.single('file'), async (req, res) =>
     const { data, error } = await supabase.storage
       .from(process.env.STORAGE_BUCKET)
       .upload(fileName, req.file.buffer, {
-        contentType: 'application/octet-stream',
         upsert: false
       });
 
