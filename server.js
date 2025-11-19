@@ -109,17 +109,23 @@ app.post('/api/upload', authenticate, upload.single('file'), async (req, res) =>
 // 3. Get All Reports (管理用)
 app.get('/api/reports', authenticate, async (req, res) => {
   try {
+    console.log('Fetching reports from Supabase...');
+    console.log('Supabase URL:', process.env.SUPABASE_URL);
+    
     const { data, error } = await supabase
       .from('reports')
       .select('*')
       .order('created_at', { ascending: false });
 
     if (error) {
+      console.error('Supabase error:', error);
       return res.status(500).json({ error: error.message });
     }
 
+    console.log('Reports fetched successfully:', data?.length || 0);
     res.json(data);
   } catch (error) {
+    console.error('Catch error:', error.message, error.stack);
     res.status(500).json({ error: error.message });
   }
 });
